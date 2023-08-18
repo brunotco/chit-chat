@@ -12,7 +12,7 @@ export class UserController {
   }
 
   @Get(':username')
-  async getUser(@Param('username') username): Promise<User> {
+  async getUser(@Param('username') username: string): Promise<User> {
     return this.userService.getUser(username);
   }
 }
