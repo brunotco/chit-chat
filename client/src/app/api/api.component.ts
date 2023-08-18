@@ -7,7 +7,7 @@ import { ApiService } from './api.service';
   styleUrls: ['./api.component.scss']
 })
 export class ApiComponent {
-  data = this.apiService.getData();
+  usersData = this.apiService.getUsers();
 
   constructor(private apiService: ApiService) { }
 }
