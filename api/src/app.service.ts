@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): any {
-    return { data: 'API reachable' };
+  getHello(): string {
+    return 'Welcome to Chit-Chat API';
   }
 }
