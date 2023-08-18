@@ -5,12 +5,19 @@ services:
       context: ./api
       dockerfile: Dockerfile
       target: development
+    depends_on:
+      - postgres
+    env_file:
+      - .env
     volumes:
       - ./api:/app
       - /app/node_modules/
     command: npm run start:dev
+    networks:
+      - chit-chat-psql
     ports:
       - 3000:3000
+
   client:
     build:
       context: ./client
@@ -20,5 +27,38 @@ services:
       - ./client:/app
       - /app/node_modules/
     command: npm run start
+    networks:
+      - chit-chat-psql
     ports:
       - 4200:4200
+    links:
+      - api
+
+  postgres:
+    image: postgres:alpine
+    env_file:
+      - .env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - chit-chat-psql
+    ports:
+      - 35000:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+    networks:
+      - chit-chat-psql
+    ports:
+      - 5050:80
+
+volumes:
+  postgres:
+networks:
+  chit-chat-psql:  
