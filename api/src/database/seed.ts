@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -6,7 +6,9 @@ const users = [
   {
     username: 'admin',
     email: 'admin@admin.com',
-    name: 'Administrator'
+    name: 'Administrator',
+    password: 'pass',
+    role: Role.ADMIN
   }
 ]
 

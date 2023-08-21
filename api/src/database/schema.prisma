@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -7,13 +8,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
-  id        Int       @default(autoincrement()) @id
+  id        String    @default(uuid()) @id
   username  String    @unique
   email     String    @unique
-  name      String?
-  active    Boolean?  @default(true)
-  createdAt DateTime  @default(now())
+  password  String
+  name      String
+  role      Role      @default(USER)
+  active    Boolean   @default(true)
+  created   DateTime  @default(now())
+  updated   DateTime  @default(now()) @updatedAt
 
   @@map("users")
 }
