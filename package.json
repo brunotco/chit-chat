@@ -1,0 +1,8 @@
+{
+  "name": "chit-chat",
+  "version": "1.0.0",
+  "scripts": {
+    "docker": "docker compose up",
+    "docker:rebuild": "docker compose up -V --build"
+  }
+}
