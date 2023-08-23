@@ -69,7 +69,7 @@ export class UserService {
       },
     });
     if (alreadyExists) {
-      throw new ConflictException('User Already Exists');
+      throw new ConflictException('Username or Email Already In Use');
     }
     return await this.prismaService.user.create({
       data: { ...user, password: await hash(user.password, 10) },
