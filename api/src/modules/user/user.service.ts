@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '@database/prisma.service';
 import { CreateUserDto, LoginUserDto, UpdateUserPasswordDto } from './user.dto';
@@ -37,11 +37,11 @@ export class UserService {
       },
     });
     if (!user) {
-      throw new HttpException('Invalid User', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException('Invalid User');
     }
     const equalPwd = await compare(updatePwd.old_password, user.password);
     if (!equalPwd) {
-      throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException('Invalid Credentials');
     }
     return await this.prismaService.user.update({
       where: { id },
@@ -69,7 +69,7 @@ export class UserService {
       },
     });
     if (alreadyExists) {
-      throw new HttpException('User Already Exists', HttpStatus.CONFLICT);
+      throw new ConflictException('User Already Exists');
     }
     return await this.prismaService.user.create({
       data: { ...user, password: await hash(user.password, 10) },
@@ -100,11 +100,11 @@ export class UserService {
       },
     });
     if (!user) {
-      throw new HttpException('Invalid User', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException('Invalid User');
     }
     const equalPwd = await compare(login.password, user.password);
     if (!equalPwd) {
-      throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException('Invalid Credentials');
     }
     const { password, ...rest } = user;
     return rest;
