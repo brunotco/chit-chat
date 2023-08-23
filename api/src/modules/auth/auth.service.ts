@@ -1,9 +1,10 @@
 import { CreateUserDto, LoginUserDto } from '@modules/user/user.dto';
 import { UserService } from '@modules/user/user.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { JwtPayload } from './jwt.strategy';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { RegistrationData } from '@shared/registration-data';
+import { LoginData } from '@shared/login-data';
+import { JwtPayload } from '@shared/jwt-payload';
 
 @Injectable()
 export class AuthService {
@@ -11,42 +12,47 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
   ) {}
-  async register(newUser: CreateUserDto): Promise<RegistrationStatus> {
-    let status: RegistrationStatus = {
-      success: true,
-      message: 'Create Success',
+
+  /**
+   * Register a new user
+   * @param user The data for the user
+   * @returns Result of the registration
+   */
+  public async register(user: CreateUserDto): Promise<RegistrationData> {
+    const userData = await this.userService.createUser(user);
+    return {
+      message: 'User Created',
+      userData,
     };
-    try {
-      status.data = await this.userService.createUser(newUser);
-    } catch (err) {
-      status = {
-        success: false,
-        message: err,
-      };
-    }
-    return status;
   }
 
-  async login(loginUser: LoginUserDto): Promise<any> {
-    const user = await this.userService.findByLogin(loginUser);
+  /**
+   * Login a user
+   * @param login The data for the login
+   * @returns Data from the login
+   */
+  public async login(login: LoginUserDto): Promise<LoginData> {
+    const userData = await this.userService.findByLogin(login);
     // const token = await this._createToken(user);
     return {
-      Authorization: this.jwtService.sign(user),
+      authorization: this.jwtService.sign(userData),
+      userData: userData,
       expiresIn: '60m',
-      data: user,
     };
   }
 
-  private async _createToken({ login }): Promise<any> {
-    const user: JwtPayload = { login };
-    const Authorization = await this.jwtService.sign(user);
-    return {
-      // expiresIn: process.env.EXPIRESIN,
-      expiresIn: '60m',
-      Authorization,
-    };
-  }
+  // private async _createToken(user): Promise<LoginData> {
+  //   // const user: JwtPayload = { login };
+  //   const authorization = await this.jwtService.sign(user);
+  //   return {
+  //     authorization,
+  //     userData: user,
+  //     // expiresIn: process.env.EXPIRESIN,
+  //     expiresIn: '60m',
+  //   };
+  // }
 
+  //TODO: Update this
   async validateUser(payload: JwtPayload): Promise<any> {
     const user = await this.userService.findByPayload(payload);
     if (!user) {
@@ -54,16 +60,4 @@ export class AuthService {
     }
     return user;
   }
-}
-
-export interface RegistrationStatus {
-  success: boolean;
-  message: string;
-  data?: User;
-}
-
-export interface RegistrationSeederStatus {
-  success: boolean;
-  message: string;
-  data?: User[];
 }

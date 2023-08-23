@@ -8,73 +8,122 @@ import { compare, hash } from 'bcrypt';
 export class UserService {
   constructor(private prismaService: PrismaService) {}
 
+  //TODO: Update this
   async getUsers(): Promise<User[]> {
     return this.prismaService.user.findMany();
   }
 
+  //TODO: Update this
   async getUser(username: string): Promise<User> {
     return this.prismaService.user.findUnique({
       where: { username },
     });
   }
 
-  async updatePassword(
-    payload: UpdateUserPasswordDto,
+  /**
+   * Update a user password
+   * @param id The user id
+   * @param updatePwd The data for the password update
+   * @returns Partial user data
+   */
+  public async updatePassword(
     id: string,
-  ): Promise<any> {
-    console.log('reached')
+    updatePwd: UpdateUserPasswordDto,
+  ): Promise<Partial<User>> {
     const user = await this.prismaService.user.findUnique({
       where: { id },
+      select: {
+        password: true,
+      },
     });
     if (!user) {
-      throw new HttpException('invalid_user', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid User', HttpStatus.UNAUTHORIZED);
     }
-    // console.log(user)
-    const equalPwd = await compare(payload.old_password, user.password);
+    const equalPwd = await compare(updatePwd.old_password, user.password);
     if (!equalPwd) {
-      throw new HttpException('invalid_credentials', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
     }
     return await this.prismaService.user.update({
       where: { id },
-      data: { password: await hash(payload.new_password, 10) },
+      data: { password: await hash(updatePwd.new_password, 10) },
+      select: {
+        id: true,
+      },
     });
   }
 
-  async createUser(newUser: CreateUserDto): Promise<any> {
+  /**
+   * Create a new user
+   * Check if username or email already exists
+   * On create, hashes the password
+   * @param user The data for the user
+   * @returns The created user
+   */
+  public async createUser(user: CreateUserDto): Promise<User> {
     const alreadyExists = await this.prismaService.user.findFirst({
       where: {
-        OR: [{ username: newUser.username }, { email: newUser.email }],
+        OR: [{ username: user.username }, { email: user.email }],
+      },
+      select: {
+        id: true,
       },
     });
     if (alreadyExists) {
       throw new HttpException('User Already Exists', HttpStatus.CONFLICT);
     }
     return await this.prismaService.user.create({
-      data: { ...newUser, password: await hash(newUser.password, 10) },
+      data: { ...user, password: await hash(user.password, 10) },
+      //? Select just some userData
     });
   }
 
-  async findByLogin(loginUser: LoginUserDto): Promise<any> {
+  /**
+   * Find a user
+   * Check if user exists
+   * Check if password match
+   * @param login The data for the login
+   * @returns Partial user data
+   */
+  public async findByLogin(login: LoginUserDto): Promise<Partial<User>> {
     const user = await this.prismaService.user.findFirst({
       where: {
-        OR: [{ username: loginUser.login }, { email: loginUser.login }],
+        OR: [{ username: login.login }, { email: login.login }],
+        AND: { active: true },
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        name: true,
+        role: true,
+        password: true,
       },
     });
     if (!user) {
-      throw new HttpException('invalid_user', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid User', HttpStatus.UNAUTHORIZED);
     }
-    const equalPwd = await compare(loginUser.password, user.password);
+    const equalPwd = await compare(login.password, user.password);
     if (!equalPwd) {
-      throw new HttpException('invalid_credentials', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
     }
     const { password, ...rest } = user;
     return rest;
   }
 
+  //TODO: Update this
   async findByPayload({ username, email }: any): Promise<any> {
     return await this.prismaService.user.findFirst({
       where: {
         OR: [{ username }, { email }],
+      },
+    });
+  }
+
+  //! Check if to delete
+  private async findUser(login: string): Promise<User> {
+    return await this.prismaService.user.findFirst({
+      where: {
+        OR: [{ username: login }, { email: login }],
       },
     });
   }
