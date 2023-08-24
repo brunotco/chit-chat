@@ -1,11 +1,11 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { CreateUserDto, LoginUserDto, UpdateUserPasswordDto } from './user.dto';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { User } from '@prisma/client';
+import { CreateUserDto, LoginUserDto, UpdateUserPasswordDto } from '@shared/user.dto';
 import { compare, hash } from 'bcrypt';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
   //TODO: Update this

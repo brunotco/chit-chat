@@ -1,15 +1,15 @@
-import { CreateUserDto, LoginUserDto } from '@modules/user/user.dto';
-import { UserService } from '@modules/user/user.service';
+import { CreateUserDto, LoginUserDto } from '@shared/user.dto';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RegistrationData } from '@shared/registration-data';
 import { LoginData } from '@shared/login-data';
 import { JwtPayload } from '@shared/jwt-payload';
+import { UsersService } from '@modules/users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
+    private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
 
@@ -19,7 +19,7 @@ export class AuthService {
    * @returns Result of the registration
    */
   public async register(user: CreateUserDto): Promise<RegistrationData> {
-    const userData = await this.userService.createUser(user);
+    const userData = await this.usersService.createUser(user);
     return {
       message: 'User Created',
       userData,
@@ -32,7 +32,7 @@ export class AuthService {
    * @returns Data from the login
    */
   public async login(login: LoginUserDto): Promise<LoginData> {
-    const userData = await this.userService.findByLogin(login);
+    const userData = await this.usersService.findByLogin(login);
     // const token = await this._createToken(user);
     return {
       authorization: this.jwtService.sign(userData),
@@ -54,7 +54,7 @@ export class AuthService {
 
   //TODO: Update this
   async validateUser(payload: JwtPayload): Promise<any> {
-    const user = await this.userService.findByPayload(payload);
+    const user = await this.usersService.findByPayload(payload);
     if (!user) {
       throw new UnauthorizedException('Invalid Token');
     }
