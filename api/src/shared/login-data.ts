@@ -1,7 +1,11 @@
-import { User } from "@prisma/client";
+import { ApiProperty } from '@nestjs/swagger';
+import { User } from '@shared/prisma-class/user';
 
-export interface LoginData {
+export class LoginData {
+  @ApiProperty()
   authorization: string;
-  userData?: Partial<User>;
+  @ApiProperty()
   expiresIn?: string;
+  @ApiProperty()
+  userData?: Partial<User>;
 }
