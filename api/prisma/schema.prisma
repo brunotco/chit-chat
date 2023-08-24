@@ -3,6 +3,12 @@ generator client {
   binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
 }
 
+generator prismaClassGenerator {
+  provider = "prisma-class-generator"
+  output = "../src/shared/prisma-class"
+  dryRun = "false"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
