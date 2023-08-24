@@ -36,8 +36,8 @@ export class AuthService {
     // const token = await this._createToken(user);
     return {
       authorization: this.jwtService.sign(userData),
-      userData: userData,
       expiresIn: '60m',
+      userData: userData,
     };
   }
 

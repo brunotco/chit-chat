@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto, LoginUserDto } from '@shared/user.dto';
 import { Post, Body } from '@nestjs/common';
 import { RegistrationData } from '@shared/registration-data';
@@ -17,10 +17,12 @@ export class AuthController {
    * @returns Result of the registration
    */
   @Post('register')
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiCreatedResponse({ type: RegistrationData })
   public async register(
     @Body() user: CreateUserDto,
   ): Promise<RegistrationData> {
-    return await this.authService.register(user);
+    return this.authService.register(user);
   }
 
   /**
@@ -29,7 +31,9 @@ export class AuthController {
    * @returns Data from the login
    */
   @Post('login')
+  @ApiOperation({ summary: 'Login a user' })
+  @ApiCreatedResponse({ type: LoginData })
   public async login(@Body() login: LoginUserDto): Promise<LoginData> {
-    return await this.authService.login(login);
+    return this.authService.login(login);
   }
 }

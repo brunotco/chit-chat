@@ -11,6 +11,7 @@ async function bootstrap() {
     .setTitle('Chit-Chat')
     .setDescription('Chit-Chat API description')
     .setVersion('1.0-alpha')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

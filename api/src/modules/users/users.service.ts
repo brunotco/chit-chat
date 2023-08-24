@@ -1,6 +1,6 @@
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { ConflictException, Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import { User } from '@shared/prisma-class/user';
 import { CreateUserDto, LoginUserDto, UpdateUserPasswordDto } from '@shared/user.dto';
 import { compare, hash } from 'bcrypt';
 
@@ -8,15 +8,34 @@ import { compare, hash } from 'bcrypt';
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  //TODO: Update this
-  async getUsers(): Promise<User[]> {
-    return this.prismaService.user.findMany();
+  /**
+   * Returns all users
+   * @returns Data of all users
+   */
+  public async findAll(): Promise<User[]> {
+    const users = await this.prismaService.user.findMany();
+    users.forEach((user) => delete user.password);
+    return users;
   }
 
   //TODO: Update this
-  async getUser(username: string): Promise<User> {
+  public async findById(id: string): Promise<User> {
+    return this.prismaService.user.findUnique({
+      where: { id },
+    });
+  }
+
+  //TODO: Update this
+  public async findByUsername(username: string): Promise<User> {
     return this.prismaService.user.findUnique({
       where: { username },
+    });
+  }
+
+  //TODO: Update this
+  public async findByEmail(email: string): Promise<User> {
+    return this.prismaService.user.findUnique({
+      where: { email },
     });
   }
 
@@ -37,17 +56,18 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new UnauthorizedException('Invalid User');
+      throw new NotFoundException('Invalid User');
     }
     const equalPwd = await compare(updatePwd.old_password, user.password);
     if (!equalPwd) {
       throw new UnauthorizedException('Invalid Credentials');
     }
-    return await this.prismaService.user.update({
+    return this.prismaService.user.update({
       where: { id },
       data: { password: await hash(updatePwd.new_password, 10) },
       select: {
         id: true,
+        username: true,
       },
     });
   }
@@ -71,7 +91,7 @@ export class UsersService {
     if (alreadyExists) {
       throw new ConflictException('Username or Email Already In Use');
     }
-    return await this.prismaService.user.create({
+    return this.prismaService.user.create({
       data: { ...user, password: await hash(user.password, 10) },
       //? Select just some userData
     });
@@ -100,19 +120,19 @@ export class UsersService {
       },
     });
     if (!user) {
-      throw new UnauthorizedException('Invalid User');
+      throw new NotFoundException('Invalid User');
     }
     const equalPwd = await compare(login.password, user.password);
     if (!equalPwd) {
       throw new UnauthorizedException('Invalid Credentials');
     }
-    const { password, ...rest } = user;
-    return rest;
+    delete user.password;
+    return user;
   }
 
   //TODO: Update this
   async findByPayload({ username, email }: any): Promise<any> {
-    return await this.prismaService.user.findFirst({
+    return this.prismaService.user.findFirst({
       where: {
         OR: [{ username }, { email }],
       },
@@ -121,7 +141,7 @@ export class UsersService {
 
   //! Check if to delete
   private async findUser(login: string): Promise<User> {
-    return await this.prismaService.user.findFirst({
+    return this.prismaService.user.findFirst({
       where: {
         OR: [{ username: login }, { email: login }],
       },
