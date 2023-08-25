@@ -1,5 +1,5 @@
-import { CreateUserDto, LoginUserDto } from '@shared/user.dto';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { CreateUserDto, LoginUserDto, UserDto } from '@shared/user.dto';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RegistrationData } from '@shared/registration-data';
 import { LoginData } from '@shared/login-data';
@@ -52,12 +52,12 @@ export class AuthService {
   //   };
   // }
 
-  //TODO: Update this
-  async validateUser(payload: JwtPayload): Promise<any> {
-    const user = await this.usersService.findByPayload(payload);
-    if (!user) {
-      throw new UnauthorizedException('Invalid Token');
-    }
-    return user;
+  /**
+   * Validate the JWT Token
+   * @param payload The JWT payload
+   * @returns The user that matchs the one in the payload
+   */
+  public async validateUser(payload: JwtPayload): Promise<UserDto> {
+    return this.usersService.findOne(payload);
   }
 }
