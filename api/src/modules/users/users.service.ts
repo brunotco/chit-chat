@@ -1,6 +1,15 @@
 import { PrismaService } from '@modules/prisma/prisma.service';
-import { ConflictException, Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
-import { CreateUserDto, GetUserDto, LoginUserDto, UpdateUserPasswordDto, UserDto } from '@shared/user.dto';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateUserDto } from '@shared/dto/create-user.dto';
+import { GetUserDto } from '@shared/dto/get-user.dto';
+import { LoginUserDto } from '@shared/dto/login-user.dto';
+import { UpdatePwdDto } from '@shared/dto/update-pwd.dto';
+import { UserDto } from '@shared/dto/user.dto';
 import { compare, hash } from 'bcrypt';
 
 @Injectable()
@@ -64,7 +73,7 @@ export class UsersService {
    */
   public async updatePassword(
     id: string,
-    updatePwd: UpdateUserPasswordDto,
+    updatePwd: UpdatePwdDto,
   ): Promise<UserDto> {
     const user = await this.prismaService.user.findUnique({
       where: { id },

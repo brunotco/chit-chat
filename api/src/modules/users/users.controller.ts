@@ -1,9 +1,25 @@
-import { Body, Controller, Get, Put, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '@modules/auth/jwt-auth.guard';
 import { RegistrationData } from '@shared/registration-data';
-import { GetUserDto, UpdateUserPasswordDto, UserDto } from '@shared/user.dto';
+import { UserDto } from '@shared/dto/user.dto';
+import { GetUserDto } from '@shared/dto/get-user.dto';
+import { UpdatePwdDto } from '@shared/dto/update-pwd.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -28,11 +44,11 @@ export class UsersController {
    * @param userDetails Search criteria id | username | email
    * @returns Data of the user
    */
-  @Get('user')
+  @Post('user')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Returns a user' })
-  @ApiOkResponse({ type: UserDto })
+  @ApiCreatedResponse({ type: UserDto })
   public async findOne(@Body() userDetails: GetUserDto): Promise<UserDto> {
     return this.usersService.findOne(userDetails);
   }
@@ -50,7 +66,7 @@ export class UsersController {
   @ApiOkResponse({ type: RegistrationData })
   public async updatePassword(
     @Request() req,
-    @Body() updatePwd: UpdateUserPasswordDto,
+    @Body() updatePwd: UpdatePwdDto,
   ): Promise<RegistrationData> {
     const userData = await this.usersService.updatePassword(
       req.user.id,
