@@ -1,9 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { User } from '@shared/prisma-class/user';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { UserDto } from './user.dto';
 
 export class RegistrationData {
-  @ApiProperty()
+  @ApiPropertyOptional()
   message: string;
-  @ApiProperty()
-  userData?: Partial<User>;
+  @ApiPropertyOptional()
+  userData?: UserDto;
 }
