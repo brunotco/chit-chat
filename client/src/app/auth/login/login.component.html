@@ -1,0 +1,18 @@
+<form [formGroup]="form" (ngSubmit)="login()">
+    <label>Login:</label>
+    <br>
+    <input type="text" formControlName="login">
+    <br>
+    <label>Password:</label>
+    <br>
+    <input type="text" formControlName="password">
+    <br>
+    <button type="submit" [disabled]="!form.valid">Submit</button>
+</form>
+<hr>
+<p>Form Data:</p>
+<pre>{{ form.value | json }}</pre>
+<pre>{{ form.status }}</pre>
+<hr>
+<p>Login Data:</p>
+<pre>{{ loginData | json }}</pre>
