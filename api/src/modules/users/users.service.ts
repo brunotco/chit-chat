@@ -1,7 +1,6 @@
 import { PrismaService } from '@modules/prisma/prisma.service';
 import { ConflictException, Injectable, UnauthorizedException, NotFoundException } from '@nestjs/common';
-import { User } from '@shared/prisma-class/user';
-import { CreateUserDto, LoginUserDto, UpdateUserPasswordDto } from '@shared/user.dto';
+import { CreateUserDto, GetUserDto, LoginUserDto, UpdateUserPasswordDto, UserDto } from '@shared/user.dto';
 import { compare, hash } from 'bcrypt';
 
 @Injectable()
@@ -12,31 +11,49 @@ export class UsersService {
    * Returns all users
    * @returns Data of all users
    */
-  public async findAll(): Promise<User[]> {
-    const users = await this.prismaService.user.findMany();
-    users.forEach((user) => delete user.password);
+  public async findAll(): Promise<UserDto[]> {
+    const users = await this.prismaService.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        name: true,
+        role: true,
+        active: true,
+      },
+    });
+    // users.forEach((user) => delete user.password);
     return users;
   }
 
-  //TODO: Update this
-  public async findById(id: string): Promise<User> {
-    return this.prismaService.user.findUnique({
-      where: { id },
+  /**
+   * Returns a user
+   * @param param0 Search criteria id | username | email
+   * @returns Data of the user
+   */
+  public async findOne({
+    id,
+    username,
+    email,
+  }: Partial<GetUserDto>): Promise<UserDto> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        OR: [{ id }, { username }, { email }],
+        AND: { active: true },
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        name: true,
+        role: true,
+        active: true,
+      },
     });
-  }
-
-  //TODO: Update this
-  public async findByUsername(username: string): Promise<User> {
-    return this.prismaService.user.findUnique({
-      where: { username },
-    });
-  }
-
-  //TODO: Update this
-  public async findByEmail(email: string): Promise<User> {
-    return this.prismaService.user.findUnique({
-      where: { email },
-    });
+    if (!user) {
+      throw new NotFoundException('Invalid User');
+    }
+    return user;
   }
 
   /**
@@ -48,7 +65,7 @@ export class UsersService {
   public async updatePassword(
     id: string,
     updatePwd: UpdateUserPasswordDto,
-  ): Promise<Partial<User>> {
+  ): Promise<UserDto> {
     const user = await this.prismaService.user.findUnique({
       where: { id },
       select: {
@@ -68,6 +85,10 @@ export class UsersService {
       select: {
         id: true,
         username: true,
+        email: true,
+        name: true,
+        role: true,
+        active: true,
       },
     });
   }
@@ -79,7 +100,7 @@ export class UsersService {
    * @param user The data for the user
    * @returns The created user
    */
-  public async createUser(user: CreateUserDto): Promise<User> {
+  public async createUser(user: CreateUserDto): Promise<UserDto> {
     const alreadyExists = await this.prismaService.user.findFirst({
       where: {
         OR: [{ username: user.username }, { email: user.email }],
@@ -93,7 +114,14 @@ export class UsersService {
     }
     return this.prismaService.user.create({
       data: { ...user, password: await hash(user.password, 10) },
-      //? Select just some userData
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        name: true,
+        role: true,
+        active: true,
+      },
     });
   }
 
@@ -104,7 +132,7 @@ export class UsersService {
    * @param login The data for the login
    * @returns Partial user data
    */
-  public async findByLogin(login: LoginUserDto): Promise<Partial<User>> {
+  public async findByLogin(login: LoginUserDto): Promise<UserDto> {
     const user = await this.prismaService.user.findFirst({
       where: {
         OR: [{ username: login.login }, { email: login.login }],
@@ -116,6 +144,7 @@ export class UsersService {
         email: true,
         name: true,
         role: true,
+        active: true,
         password: true,
       },
     });
@@ -128,23 +157,5 @@ export class UsersService {
     }
     delete user.password;
     return user;
-  }
-
-  //TODO: Update this
-  async findByPayload({ username, email }: any): Promise<any> {
-    return this.prismaService.user.findFirst({
-      where: {
-        OR: [{ username }, { email }],
-      },
-    });
-  }
-
-  //! Check if to delete
-  private async findUser(login: string): Promise<User> {
-    return this.prismaService.user.findFirst({
-      where: {
-        OR: [{ username: login }, { email: login }],
-      },
-    });
   }
 }

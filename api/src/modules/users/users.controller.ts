@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Param, Put, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Put, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@modules/auth/jwt-auth.guard';
 import { RegistrationData } from '@shared/registration-data';
-import { UpdateUserPasswordDto } from '@shared/user.dto';
-import { User } from '@shared/prisma-class/user';
+import { GetUserDto, UpdateUserPasswordDto, UserDto } from '@shared/user.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -19,15 +18,23 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Returns all users' })
-  @ApiOkResponse({ type: User, isArray: true })
-  public async findAll(): Promise<User[]> {
+  @ApiOkResponse({ type: UserDto, isArray: true })
+  public async findAll(): Promise<UserDto[]> {
     return this.usersService.findAll();
   }
 
-  //TODO: Update this
-  @Get(':username')
-  async getUser(@Param('username') username: string): Promise<User> {
-    return this.usersService.findByUsername(username);
+  /**
+   * Returns a user
+   * @param userDetails Search criteria id | username | email
+   * @returns Data of the user
+   */
+  @Get('user')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Returns a user' })
+  @ApiOkResponse({ type: UserDto })
+  public async findOne(@Body() userDetails: GetUserDto): Promise<UserDto> {
+    return this.usersService.findOne(userDetails);
   }
 
   /**
