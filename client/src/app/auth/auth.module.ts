@@ -7,6 +7,7 @@ import { LandingComponent } from './landing/landing.component';
 import { RegisterComponent } from './register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApiModule } from '../api/api.module';
+import { AuthService } from './auth.service';
 
 
 @NgModule({
@@ -20,6 +21,9 @@ import { ApiModule } from '../api/api.module';
     AuthRoutingModule,
     ReactiveFormsModule,
     ApiModule
+  ],
+  providers: [
+    AuthService
   ]
 })
 export class AuthModule { }
