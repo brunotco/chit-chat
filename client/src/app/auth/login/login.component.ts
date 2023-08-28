@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from 'src/app/api/api.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -8,24 +9,32 @@ import { ApiService } from 'src/app/api/api.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  public form = new FormGroup({
-    login: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required)
-  });
+  public loginForm = this.formBuilder.group({
+    login: ['', Validators.required],
+    password: ['', Validators.required],
+  })
 
   public loginData = {};
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private formBuilder: FormBuilder, private authService: AuthService) {}
 
   async login() {
-    console.log(this.form.value);
+    console.log(this.loginForm.value);
     this.loginData = {};
-    this.apiService.login(this.form.value)
+    this.apiService.login(this.loginForm.value)
     .subscribe(
       (data) => {
-        console.log(data);
+        this.authService.setSession(data);
         this.loginData = data;
       }
     )
+  }
+
+  currentAuth() {
+    this.authService.isLoggedIn();
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

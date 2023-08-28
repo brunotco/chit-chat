@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="login()">
+<form [formGroup]="loginForm" (ngSubmit)="login()">
     <label>Login:</label>
     <br>
     <input type="text" formControlName="login">
@@ -7,12 +7,15 @@
     <br>
     <input type="text" formControlName="password">
     <br>
-    <button type="submit" [disabled]="!form.valid">Submit</button>
+    <button type="submit" [disabled]="!loginForm.valid">Submit</button>
 </form>
 <hr>
+<button (click)="currentAuth()">Current</button>
+<button (click)="logout()">Logout</button>
+<hr>
 <p>Form Data:</p>
-<pre>{{ form.value | json }}</pre>
-<pre>{{ form.status }}</pre>
+<pre>{{ loginForm.value | json }}</pre>
+<pre>{{ loginForm.status }}</pre>
 <hr>
 <p>Login Data:</p>
 <pre>{{ loginData | json }}</pre>
