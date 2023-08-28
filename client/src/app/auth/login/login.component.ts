@@ -34,6 +34,10 @@ export class LoginComponent {
     this.authService.isLoggedIn();
   }
 
+  currentExp() {
+    this.authService.getExpiration();
+  }
+
   logout() {
     this.authService.logout();
   }
