@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from 'src/app/api/api.service';
 import { AuthService } from '../auth.service';
+import { AlertService } from 'src/app/alert/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -16,22 +17,37 @@ export class LoginComponent {
 
   public loginData = {};
 
-  constructor(private apiService: ApiService, private formBuilder: FormBuilder, private authService: AuthService) {}
+  constructor(
+    private apiService: ApiService,
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private alertService: AlertService
+    ) {
+    this.authService.userChanged$.subscribe(
+      () => this.loginData = this.authService.getUser()
+    );
+  }
 
   async login() {
-    console.log(this.loginForm.value);
-    this.loginData = {};
     this.apiService.login(this.loginForm.value)
-    .subscribe(
-      (data) => {
-        this.authService.setSession(data);
+    .subscribe({
+      next: (data: any) => {
         this.loginData = data;
+        this.authService.saveAccessToken(data.authorization);
+        this.authService.saveUser(data.userData);
+        this.alertService.success('Logged In')
+      },
+      error: (err: any) => {
+        this.alertService.error(err.error.message);
       }
+    }
     )
   }
 
   currentAuth() {
-    this.authService.isLoggedIn();
+    console.log(
+      this.authService.getAccessToken()
+    );
   }
 
   currentExp() {
@@ -40,5 +56,6 @@ export class LoginComponent {
 
   logout() {
     this.authService.logout();
+    this.alertService.success('Logged Out')
   }
 }

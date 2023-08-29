@@ -1,4 +1,4 @@
-<form [formGroup]="loginForm" (ngSubmit)="login()">
+<form *ngIf="(loginData | json) == '{}'" [formGroup]="loginForm" (ngSubmit)="login()">
     <label>Login:</label>
     <br>
     <input type="text" formControlName="login">
@@ -10,13 +10,13 @@
     <button type="submit" [disabled]="!loginForm.valid">Submit</button>
 </form>
 <hr>
-<button (click)="currentAuth()">Current</button>
-<button (click)="currentExp()">Expiration</button>
+<button (click)="currentAuth()">Current Auth</button>
+<button (click)="currentExp()">Current Expiration</button>
 <button (click)="logout()">Logout</button>
-<hr>
-<p>Form Data:</p>
+<!-- <hr>
+<h3>Form Data:</h3>
 <pre>{{ loginForm.value | json }}</pre>
-<pre>{{ loginForm.status }}</pre>
+<pre>{{ loginForm.status }}</pre> -->
 <hr>
-<p>Login Data:</p>
+<h3>Current Login:</h3>
 <pre>{{ loginData | json }}</pre>
