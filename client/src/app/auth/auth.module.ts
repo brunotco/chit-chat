@@ -8,6 +8,7 @@ import { RegisterComponent } from './register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApiModule } from '../api/api.module';
 import { AuthService } from './auth.service';
+import { AlertModule } from '../alert/alert.module';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { AuthService } from './auth.service';
     CommonModule,
     AuthRoutingModule,
     ReactiveFormsModule,
-    ApiModule
+    ApiModule,
+    AlertModule
   ],
   providers: [
     AuthService

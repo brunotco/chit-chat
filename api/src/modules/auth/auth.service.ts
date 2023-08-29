@@ -39,7 +39,7 @@ export class AuthService {
     return {
       authorization: this.jwtService.sign(userData),
       expiresIn: '60m',
-      userData: userData,
+      userData
     };
   }
 

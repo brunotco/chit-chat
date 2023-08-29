@@ -1,16 +1,25 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class AuthService {
 
+  ACCESS_TOKEN = 'access_token';
+  REFRESH_TOKEN = 'refresh_token';
+  USER_DATA = 'user_data';
+
+  private userChanged = new BehaviorSubject('');
+  userChanged$ = this.userChanged.asObservable();
+
   constructor() { }
 
-  setSession(data: any) {
-    localStorage.setItem('authorization', data.authorization);
-  }
+  // setSession(data: any) {
+  //   localStorage.setItem('authorization', data.authorization);
+  // }
 
   logout() {
-    localStorage.removeItem('authorization');
+    sessionStorage.clear();
+    this.userChanged.next('');
   }
 
   isLoggedIn() {
@@ -21,7 +30,6 @@ export class AuthService {
 
   getExpiration() {
     const token = localStorage.getItem('authorization');
-    let issued;
     let expires;
     if (token) {
       expires = JSON.parse(atob(token.split('.')[1])).exp;
@@ -41,5 +49,33 @@ export class AuthService {
     )
 
     // console.log(Math.floor(timeout / 60));
+  }
+
+  //? Turn this into just two functions with <T>
+  public saveAccessToken(token: string) {
+    sessionStorage.removeItem(this.ACCESS_TOKEN);
+    sessionStorage.setItem(this.ACCESS_TOKEN, token);
+  }
+  public getAccessToken(): string | null {
+    return sessionStorage.getItem(this.ACCESS_TOKEN);
+  }
+  public saveRefreshToken(token: string) {
+    sessionStorage.removeItem(this.REFRESH_TOKEN);
+    sessionStorage.setItem(this.REFRESH_TOKEN, token);
+  }
+  public getRefreshToken(): string | null {
+    return sessionStorage.getItem(this.REFRESH_TOKEN);
+  }
+  
+  public saveUser(user: any) {
+    sessionStorage.removeItem(this.USER_DATA);
+    sessionStorage.setItem(this.USER_DATA, JSON.stringify(user));
+    this.userChanged.next('');
+  }
+
+  public getUser() {
+    const user = sessionStorage.getItem(this.USER_DATA);
+    if (user) return JSON.parse(user);
+    return {};
   }
 }
