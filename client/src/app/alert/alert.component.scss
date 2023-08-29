@@ -1,0 +1,18 @@
+//? Change the colors
+::ng-deep .mat-mdc-snack-bar-container {
+    --mat-mdc-snack-bar-button-color: black;
+    --mdc-snackbar-container-color: grey;
+    --mdc-snackbar-supporting-text-color: black;
+    &.snack-bar-success {
+        --mdc-snackbar-container-color: green;
+    }
+    &.snack-bar-error {
+        --mdc-snackbar-container-color: red;
+    }
+    &.snack-bar-info {
+        --mdc-snackbar-container-color: blue;
+    }
+    &.snack-bar-warning {
+        --mdc-snackbar-container-color: yellow;
+    }
+}
