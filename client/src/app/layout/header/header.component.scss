@@ -1,0 +1,14 @@
+mat-toolbar, mat-toolbar-row, mat-toolbar-row button {
+    background: #004a9f;
+    color: white;
+}
+
+mat-toolbar-row button {
+    width: 100%;
+}
+
+.navMenu {
+    position: absolute;
+    z-index: 2000;
+    width: 100%;
+}

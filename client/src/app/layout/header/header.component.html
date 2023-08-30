@@ -1,0 +1,74 @@
+<mat-toolbar fxLayout="row" fxLayoutAlign="space-between center">
+    <div fxLayoutAlign="space-between center">
+        <button mat-icon-button (click)="navigateTo('/')">
+            <mat-icon>forum</mat-icon>
+        </button>
+        <span>Chit-Chat</span>
+    </div>
+    <button mat-button (click)="menuOpen = !menuOpen" fxHide.gt-xs>
+        <mat-icon>
+            {{ menuOpen ? 'close' : 'menu' }}
+        </mat-icon>
+    </button>    
+    <div fxHide.lt-sm>
+        <ng-container *ngIf="!(authenticated$ | async)">
+            <ng-container *ngFor="let nav of authNav">
+                <button mat-button (click)="nav.click()">
+                    <mat-icon>{{ nav.icon }}</mat-icon>
+                    {{ nav.name }}
+                </button>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="(authenticated$ | async)">
+            <ng-container *ngFor="let nav of userNav">
+                <button mat-button (click)="nav.click()">
+                    <mat-icon>{{ nav.icon }}</mat-icon>
+                    {{ nav.name }}
+                </button>
+            </ng-container>
+        </ng-container>
+    </div>
+</mat-toolbar>
+<div fxHide.gt-xs [hidden]="!menuOpen" class="navMenu">
+    <mat-divider></mat-divider>
+    <ng-container *ngIf="!(authenticated$ | async)">
+        <ng-container *ngFor="let nav of authNav">
+            <mat-toolbar-row>
+                <button mat-button (click)="nav.click()">
+                    <mat-icon>{{ nav.icon }}</mat-icon>
+                    {{ nav.name }}
+                </button>
+            </mat-toolbar-row>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="(authenticated$ | async)">
+        <ng-container *ngFor="let nav of userNav">
+            <mat-toolbar-row>
+                <button mat-button (click)="nav.click()">
+                    <mat-icon>{{ nav.icon }}</mat-icon>
+                    {{ nav.name }}
+                </button>
+            </mat-toolbar-row>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </ng-container>
+</div>
+<!-- <mat-menu #navMenu>
+    <ng-container *ngIf="!(authenticated$ | async)">
+        <ng-container *ngFor="let nav of authNav">
+            <button mat-menu-item (click)="nav.click()">
+                <mat-icon>{{ nav.icon }}</mat-icon>
+                {{ nav.name }}
+            </button>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="(authenticated$ | async)">
+        <ng-container *ngFor="let nav of userNav">
+            <button mat-menu-item (click)="nav.click()">
+                <mat-icon>{{ nav.icon }}</mat-icon>
+                {{ nav.name }}
+            </button>
+        </ng-container>
+    </ng-container>
+</mat-menu> -->
