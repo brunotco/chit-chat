@@ -9,7 +9,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ApiModule } from '../api/api.module';
 import { AuthService } from './auth.service';
 import { AlertModule } from '../alert/alert.module';
-
+import { MaterialModule } from '../material.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,9 @@ import { AlertModule } from '../alert/alert.module';
     AuthRoutingModule,
     ReactiveFormsModule,
     ApiModule,
-    AlertModule
+    AlertModule,
+    MaterialModule,
+    FlexLayoutModule
   ],
   providers: [
     AuthService

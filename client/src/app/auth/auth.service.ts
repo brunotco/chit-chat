@@ -8,18 +8,17 @@ export class AuthService {
   REFRESH_TOKEN = 'refresh_token';
   USER_DATA = 'user_data';
 
-  private userChanged = new BehaviorSubject('');
-  userChanged$ = this.userChanged.asObservable();
-
-  constructor() { }
-
-  // setSession(data: any) {
-  //   localStorage.setItem('authorization', data.authorization);
-  // }
+  private userAuthenticated = new BehaviorSubject<boolean>(false);
+  userAuthenticated$ = this.userAuthenticated.asObservable();
+  
+  constructor() {
+    //? Check if logged user is expired
+    this.userAuthenticated.next(this.authenticated());
+  }
 
   logout() {
     sessionStorage.clear();
-    this.userChanged.next('');
+    this.userAuthenticated.next(false);
   }
 
   isLoggedIn() {
@@ -70,12 +69,19 @@ export class AuthService {
   public saveUser(user: any) {
     sessionStorage.removeItem(this.USER_DATA);
     sessionStorage.setItem(this.USER_DATA, JSON.stringify(user));
-    this.userChanged.next('');
+    this.userAuthenticated.next(true);
   }
 
   public getUser() {
     const user = sessionStorage.getItem(this.USER_DATA);
+    console.log(user)
     if (user) return JSON.parse(user);
-    return {};
+    return null;
+  }
+
+  public authenticated() {
+    const user = this.getUser();
+    if (user) return true;
+    return false;
   }
 }
