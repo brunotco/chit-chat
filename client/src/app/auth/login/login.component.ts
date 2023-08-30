@@ -15,33 +15,30 @@ export class LoginComponent {
     password: ['', Validators.required],
   })
 
-  public loginData = {};
+  public hidePassword = true;
+
+  get authenticated$() { return this.authService.userAuthenticated$ };
 
   constructor(
     private apiService: ApiService,
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private alertService: AlertService
-    ) {
-    this.authService.userChanged$.subscribe(
-      () => this.loginData = this.authService.getUser()
-    );
-  }
+    ) { }
 
   async login() {
     this.apiService.login(this.loginForm.value)
     .subscribe({
       next: (data: any) => {
-        this.loginData = data;
+        // this.loggedUser = data;
         this.authService.saveAccessToken(data.authorization);
         this.authService.saveUser(data.userData);
-        this.alertService.success('Logged In')
+        this.alertService.success('Logged In');
       },
       error: (err: any) => {
         this.alertService.error(err.error.message);
       }
-    }
-    )
+    });
   }
 
   currentAuth() {
@@ -54,8 +51,16 @@ export class LoginComponent {
     this.authService.getExpiration();
   }
 
+  logged() {
+    // this.loggedUser = this.authService.userLogged.value;
+  }
+
   logout() {
     this.authService.logout();
     this.alertService.success('Logged Out')
+  }
+
+  currentUser() {
+    return this.authService.getUser();
   }
 }
