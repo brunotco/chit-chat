@@ -11,7 +11,7 @@ export class AlertService {
     this.snackBar.openFromComponent(AlertComponent, {
       data: message,
       horizontalPosition: 'right',
-      verticalPosition: 'top',
+      verticalPosition: 'bottom',
       duration: 3000,
       ...config
     })
