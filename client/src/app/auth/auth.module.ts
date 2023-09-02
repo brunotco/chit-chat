@@ -11,6 +11,11 @@ import { AuthService } from './auth.service';
 import { AlertModule } from '../alert/alert.module';
 import { MaterialModule } from '../material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { StoreModule } from '@ngrx/store';
+import { AUTH_STATE_NAME } from './state/auth.selector';
+import { AuthReducer } from './state/auth.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './state/auth.effects';
 
 @NgModule({
   declarations: [
@@ -25,7 +30,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     ApiModule,
     AlertModule,
     MaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    EffectsModule.forFeature([AuthEffects]),
+    StoreModule.forFeature(AUTH_STATE_NAME, AuthReducer)
   ],
   providers: [
     AuthService
