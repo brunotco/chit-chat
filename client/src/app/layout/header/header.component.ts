@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
+import { Store } from '@ngrx/store';
+import { isAuthenticated } from 'src/app/auth/state/auth.selector';
+import { autoLogin, logout } from 'src/app/auth/state/auth.actions';
 
 @Component({
   selector: 'app-header',
@@ -9,14 +12,17 @@ import { AuthService } from 'src/app/auth/auth.service';
 })
 export class HeaderComponent {
 
-  get authenticated$() { return this.authService.userAuthenticated$ };
-
   menuOpen = false;
+
+  public isAuthenticated$;
 
   constructor(
     private router: Router,
-    private authService: AuthService
-  ) { }
+    private store: Store
+  ) {
+    this.isAuthenticated$ = this.store.select(isAuthenticated);
+    this.store.dispatch(autoLogin());
+  }
 
   public authNav = [
     { name: 'Login', click: () => this.navigateTo('/login'), icon: 'power_settings_new' },
@@ -30,10 +36,10 @@ export class HeaderComponent {
   ]
 
   public navigateTo(link: string) {
-    this.router.navigateByUrl(link);
+    this.router.navigate([link]);
   }
 
   public logout() {
-    this.authService.logout();
+    this.store.dispatch(logout());
   }
 }

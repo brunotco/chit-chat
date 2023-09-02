@@ -1,8 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { ApiService } from 'src/app/api/api.service';
 import { AuthService } from '../auth.service';
 import { AlertService } from 'src/app/alert/alert.service';
+import { LoginForm } from 'src/app/models/login-form.model';
+import { Store } from '@ngrx/store';
+import { loginStart, logout } from '../state/auth.actions';
+import { isAuthenticated } from '../state/auth.selector';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,51 +21,24 @@ export class LoginComponent {
   })
 
   public hidePassword = true;
-
-  get authenticated$() { return this.authService.userAuthenticated$ };
+  public isAuthenticated$: Observable<boolean>;
 
   constructor(
-    private apiService: ApiService,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private alertService: AlertService
-    ) { }
+    private store: Store
+  ) {
+    this.isAuthenticated$ = this.store.select(isAuthenticated);
+  }
 
   async login() {
-    this.apiService.login(this.loginForm.value)
-    .subscribe({
-      next: (data: any) => {
-        // this.loggedUser = data;
-        this.authService.saveAccessToken(data.authorization);
-        this.authService.saveUser(data.userData);
-        this.alertService.success('Logged In');
-      },
-      error: (err: any) => {
-        this.alertService.error(err.error.message);
-      }
-    });
-  }
-
-  currentAuth() {
-    console.log(
-      this.authService.getAccessToken()
-    );
-  }
-
-  currentExp() {
-    this.authService.getExpiration();
-  }
-
-  logged() {
-    // this.loggedUser = this.authService.userLogged.value;
-  }
-
-  logout() {
-    this.authService.logout();
-    this.alertService.success('Logged Out')
-  }
-
-  currentUser() {
-    return this.authService.getUser();
+    const login = this.loginForm.get('login')?.value;
+    const password = this.loginForm.get('password')?.value;
+    if (login && password) {
+      const loginForm: LoginForm = {
+          login,
+          password
+      };
+      this.store.dispatch(loginStart({ loginForm }));
+    }
   }
 }

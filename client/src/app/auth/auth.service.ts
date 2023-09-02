@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { logout } from './state/auth.actions';
+import { LoginResponse } from '../models/login-response.model';
+import { User } from '../models/user.model';
+import { AlertService } from '../alert/alert.service';
 
 @Injectable()
 export class AuthService {
@@ -8,27 +12,37 @@ export class AuthService {
   REFRESH_TOKEN = 'refresh_token';
   USER_DATA = 'user_data';
 
-  private userAuthenticated = new BehaviorSubject<boolean>(false);
-  userAuthenticated$ = this.userAuthenticated.asObservable();
+  logoutTimeout: any;
   
-  constructor() {
-    //? Check if logged user is expired
-    this.userAuthenticated.next(this.authenticated());
+  constructor(
+    private store: Store,
+  ) { }
+
+  public login(loginResponse: LoginResponse) {
+    this.saveAccessToken(loginResponse.authorization);
+    this.saveUser(loginResponse.userData);
+    this.sessionTimeout(loginResponse.authorization);
   }
 
-  logout() {
+  public logout() {
     sessionStorage.clear();
-    this.userAuthenticated.next(false);
   }
 
-  isLoggedIn() {
-    console.log(
-      localStorage.getItem('authorization')
-    );
+  public sessionTimeout(token: string) {
+    const now = new Date().getTime();
+    const expires = JSON.parse(atob(token.split('.')[1])).exp;
+    const interval = (expires * 1000) - now;
+
+    console.warn(`Session Timeout: ${new Date(expires * 1000)}`);
+
+    this.logoutTimeout = setTimeout(() => {
+      this.store.dispatch(logout());
+    }, interval);
   }
 
+  //? To check
   getExpiration() {
-    const token = localStorage.getItem('authorization');
+    const token = sessionStorage.getItem('authorization');
     let expires;
     if (token) {
       expires = JSON.parse(atob(token.split('.')[1])).exp;
@@ -49,6 +63,17 @@ export class AuthService {
 
     // console.log(Math.floor(timeout / 60));
   }
+  anotherExpiration() {
+    const token = sessionStorage.getItem(this.ACCESS_TOKEN);
+    let expires;
+    if (token) {
+      expires = JSON.parse(atob(token.split('.')[1])).exp;
+    }
+    console.log('expires', expires);
+    const expiration = new Date(new Date().getTime());
+    const exp = new Date(expires * 1000);
+    console.log('expiration', exp);
+  }
 
   //? Turn this into just two functions with <T>
   public saveAccessToken(token: string) {
@@ -58,6 +83,7 @@ export class AuthService {
   public getAccessToken(): string | null {
     return sessionStorage.getItem(this.ACCESS_TOKEN);
   }
+
   public saveRefreshToken(token: string) {
     sessionStorage.removeItem(this.REFRESH_TOKEN);
     sessionStorage.setItem(this.REFRESH_TOKEN, token);
@@ -66,22 +92,13 @@ export class AuthService {
     return sessionStorage.getItem(this.REFRESH_TOKEN);
   }
   
-  public saveUser(user: any) {
+  public saveUser(user: User) {
     sessionStorage.removeItem(this.USER_DATA);
     sessionStorage.setItem(this.USER_DATA, JSON.stringify(user));
-    this.userAuthenticated.next(true);
   }
-
-  public getUser() {
+  public getUser(): User | null {
     const user = sessionStorage.getItem(this.USER_DATA);
-    console.log(user)
     if (user) return JSON.parse(user);
     return null;
-  }
-
-  public authenticated() {
-    const user = this.getUser();
-    if (user) return true;
-    return false;
   }
 }
