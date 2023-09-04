@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { logout } from '@store/auth/auth.actions';
+import { autoLogout, logout } from '@store/auth/auth.actions';
 import { LoginResponse } from '@models/login-response.model';
 import { User } from '@models/user.model';
 
@@ -20,23 +20,27 @@ export class AuthService {
   public login(loginResponse: LoginResponse) {
     this.saveAccessToken(loginResponse.authorization);
     this.saveUser(loginResponse.userData);
-    this.sessionTimeout(loginResponse.authorization);
+    // this.sessionTimeout(loginResponse.authorization);
   }
 
   public logout() {
     sessionStorage.clear();
   }
 
-  public sessionTimeout(token: string) {
+  public log() {
+    console.warn('Session Timeout Setter Implementation');
+  }
+
+  private sessionTimeout(token: string) {
     const now = new Date().getTime();
     const expires = JSON.parse(atob(token.split('.')[1])).exp;
-    const interval = (expires * 1000) - now;
+    const timeout = (expires * 1000) - now;
 
     console.warn(`Session Timeout: ${new Date(expires * 1000)}`);
 
     this.logoutTimeout = setTimeout(() => {
       this.store.dispatch(logout());
-    }, interval);
+    }, timeout);
   }
 
   //? To check
