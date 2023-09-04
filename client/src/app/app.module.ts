@@ -8,6 +8,7 @@ import { LayoutModule } from './layout/layout.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { appEffects, appReducers } from '@store/app.state';
 
 @NgModule({
   declarations: [
@@ -18,9 +19,9 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     AppRoutingModule,
     BrowserAnimationsModule,
     LayoutModule,
-    EffectsModule.forRoot([]),
-    StoreModule.forRoot({}),
-    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: false }),
+    EffectsModule.forRoot(appEffects),
+    StoreModule.forRoot(appReducers),
+    StoreDevtoolsModule.instrument({ logOnly: false }),
   ],
   providers: [],
   bootstrap: [AppComponent]
