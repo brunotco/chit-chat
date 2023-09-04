@@ -9,6 +9,7 @@ import { AuthModule } from '../auth/auth.module';
 import { LayoutRoutingModule } from './layout-routing.module';
 import { MainComponent } from './main/main.component';
 import { TempComponent } from './temp/temp.component';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { TempComponent } from './temp/temp.component';
     FooterComponent,
     LayoutComponent,
     MainComponent,
-    TempComponent
+    TempComponent,
+    LoadingComponent
   ],
   imports: [
     CommonModule,
