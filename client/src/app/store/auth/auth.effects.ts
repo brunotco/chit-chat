@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { autoLogin, autoLoginSuccess, loginFail, loginStart, loginSuccess, logout } from './auth.actions';
-import { exhaustMap, map, catchError, tap, mergeMap } from "rxjs/operators";
+import { autoLogin, autoLogout, loginFail, loginStart, loginSuccess, logout } from './auth.actions';
+import { exhaustMap, map, catchError, tap, mergeMap, delay, observeOn, take, switchMap } from "rxjs/operators";
 import { ApiService } from 'src/app/api/api.service';
-import { of } from 'rxjs';
+import { of, timer } from 'rxjs';
 import { AlertService } from 'src/app/alert/alert.service';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from '@angular/router';
@@ -67,14 +67,26 @@ export class AuthEffects {
     { dispatch: false });
 
     autoLogin$ = createEffect(() => {
-        return this.actions$.pipe(
-            ofType(autoLogin),
-            mergeMap(action => {
+        return timer(0).pipe(
+            map(() => {
                 const user = this.authService.getUser();
                 const token = this.authService.getAccessToken();
-                if (token) this.authService.sessionTimeout(token);
-                return of(autoLoginSuccess({ data: { token, user }, redirect: false }))
+                if (user != null && token != null) {
+                    this.store.dispatch(autoLogin({ data: { token, user }, redirect: false }));
+                }
             })
-        )
-    })
+        );
+
+        // return timer(0).pipe(
+        //     map(() => {
+        //         return of(this.authService.log());
+        //     })
+        // );
+    },
+    {dispatch:false});
+
+    //? Create effect to do this
+    // this.logoutTimeout = setTimeout(() => {
+    //     this.store.dispatch(logout());
+    //   }, timeout);
 }

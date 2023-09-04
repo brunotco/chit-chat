@@ -20,7 +20,6 @@ export class HeaderComponent {
     private store: Store
   ) {
     this.isAuthenticated$ = this.store.select(isAuthenticated);
-    this.store.dispatch(autoLogin());
   }
 
   public authNav = [

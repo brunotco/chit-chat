@@ -7,10 +7,10 @@ import { AUTH_STATE_NAME } from './auth.selector';
 export const LOGIN_START = `[${AUTH_STATE_NAME}] login start`;
 export const LOGIN_SUCCESS = `[${AUTH_STATE_NAME}] login success`;
 export const LOGIN_FAIL = `[${AUTH_STATE_NAME}] login fail`;
-export const LOGIN_STORAGE = `[${AUTH_STATE_NAME}] login from storage`;
 export const LOGOUT = `[${AUTH_STATE_NAME}] logout`;
 export const AUTOLOGIN = `[${AUTH_STATE_NAME}] auto login`;
-export const AUTOLOGIN_SUCCESS = `[${AUTH_STATE_NAME}] auto login success`;
+export const AUTOLOGOUT = `[${AUTH_STATE_NAME}] auto logout`;
+export const SET_LOGOUT_TIMEOUT = `[${AUTH_STATE_NAME}] set logout timeout`;
 
 export const loginStart = createAction(
     LOGIN_START,
@@ -30,13 +30,19 @@ export const loginFail = createAction(
 
 export const logout = createAction(
     LOGOUT
-)
+);
 
 export const autoLogin = createAction(
-    AUTOLOGIN
-)
-
-export const autoLoginSuccess = createAction(
-    AUTOLOGIN_SUCCESS,
+    AUTOLOGIN,
     props<{data: AuthState, redirect: boolean }>()
+);
+
+export const autoLogout = createAction(
+    AUTOLOGOUT,
+    props<{timeout: number}>()
+);
+
+export const setLogoutTimeout = createAction(
+    SET_LOGOUT_TIMEOUT,
+    props<{timeout: number}>()
 );
