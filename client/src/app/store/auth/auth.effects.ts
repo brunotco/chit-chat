@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { autoLogin, autoLoginSuccess, loginFail, loginStart, loginSuccess, logout } from './auth.actions';
-import { switchMap, exhaustMap, map, catchError, tap, mergeMap } from "rxjs/operators";
+import { exhaustMap, map, catchError, tap, mergeMap } from "rxjs/operators";
 import { ApiService } from 'src/app/api/api.service';
-import { from, of } from 'rxjs';
+import { of } from 'rxjs';
 import { AlertService } from 'src/app/alert/alert.service';
 import { AuthService } from '../../auth/auth.service';
-import { LoginResponse } from 'src/app/models/login-response.model';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { setLoading } from 'src/app/store/shared/shared.actions';
+import { setLoading } from '@store/shared/shared.actions';
 
 @Injectable()
 export class AuthEffects {

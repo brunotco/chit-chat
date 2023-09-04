@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service';
 import { Store } from '@ngrx/store';
-import { isAuthenticated } from 'src/app/auth/state/auth.selector';
-import { autoLogin, logout } from 'src/app/auth/state/auth.actions';
+import { isAuthenticated } from '@store/auth/auth.selector';
+import { autoLogin, logout } from '@store/auth/auth.actions';
 
 @Component({
   selector: 'app-header',

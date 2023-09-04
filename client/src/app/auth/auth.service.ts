@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { logout } from './state/auth.actions';
-import { LoginResponse } from '../models/login-response.model';
-import { User } from '../models/user.model';
-import { AlertService } from '../alert/alert.service';
+import { logout } from '@store/auth/auth.actions';
+import { LoginResponse } from '@models/login-response.model';
+import { User } from '@models/user.model';
 
 @Injectable()
 export class AuthService {

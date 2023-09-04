@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
-import { ApiService } from 'src/app/api/api.service';
-import { AuthService } from '../auth.service';
-import { AlertService } from 'src/app/alert/alert.service';
-import { LoginForm } from 'src/app/models/login-form.model';
+import { LoginForm } from '@models/login-form.model';
 import { Store } from '@ngrx/store';
-import { loginStart, logout } from '../state/auth.actions';
-import { isAuthenticated } from '../state/auth.selector';
+import { loginStart } from '@store/auth/auth.actions';
+import { isAuthenticated } from '@store/auth/auth.selector';
 import { Observable } from 'rxjs';
+import { setLoading } from '@store/shared/shared.actions';
 
 @Component({
   selector: 'app-login',
@@ -38,6 +36,7 @@ export class LoginComponent {
           login,
           password
       };
+      this.store.dispatch(setLoading({ status: true }));
       this.store.dispatch(loginStart({ loginForm }));
     }
   }
