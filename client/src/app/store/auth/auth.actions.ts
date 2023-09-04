@@ -2,15 +2,15 @@ import { createAction, props } from '@ngrx/store';
 import { LoginForm } from 'src/app/models/login-form.model';
 import { LoginResponse } from 'src/app/models/login-response.model';
 import { AuthState } from './auth.state';
+import { AUTH_STATE_NAME } from './auth.selector';
 
-const state = 'auth';
-export const LOGIN_START = `[${state}] login start`;
-export const LOGIN_SUCCESS = `[${state}] login success`;
-export const LOGIN_FAIL = `[${state}] login fail`;
-export const LOGIN_STORAGE = `[${state}] login from storage`;
-export const LOGOUT = `[${state}] logout`;
-export const AUTOLOGIN = `[${state}] auto login`;
-export const AUTOLOGIN_SUCCESS = `[${state}] auto login success`;
+export const LOGIN_START = `[${AUTH_STATE_NAME}] login start`;
+export const LOGIN_SUCCESS = `[${AUTH_STATE_NAME}] login success`;
+export const LOGIN_FAIL = `[${AUTH_STATE_NAME}] login fail`;
+export const LOGIN_STORAGE = `[${AUTH_STATE_NAME}] login from storage`;
+export const LOGOUT = `[${AUTH_STATE_NAME}] logout`;
+export const AUTOLOGIN = `[${AUTH_STATE_NAME}] auto login`;
+export const AUTOLOGIN_SUCCESS = `[${AUTH_STATE_NAME}] auto login success`;
 
 export const loginStart = createAction(
     LOGIN_START,

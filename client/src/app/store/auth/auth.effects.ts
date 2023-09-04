@@ -5,9 +5,11 @@ import { switchMap, exhaustMap, map, catchError, tap, mergeMap } from "rxjs/oper
 import { ApiService } from 'src/app/api/api.service';
 import { from, of } from 'rxjs';
 import { AlertService } from 'src/app/alert/alert.service';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../auth/auth.service';
 import { LoginResponse } from 'src/app/models/login-response.model';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { setLoading } from 'src/app/store/shared/shared.actions';
 
 @Injectable()
 export class AuthEffects {
@@ -16,7 +18,8 @@ export class AuthEffects {
         private apiService: ApiService,
         private authService: AuthService,
         private alertService: AlertService,
-        private router: Router
+        private router: Router,
+        private store: Store
     ) { }
 
     loginStart$ = createEffect(() => {
@@ -25,13 +28,13 @@ export class AuthEffects {
             exhaustMap(action => {
                 return this.apiService.login(action.loginForm).pipe(
                     map(loginResponse => {
-                        //? Disable loading
+                        this.store.dispatch(setLoading({ status: false }));
                         this.authService.login(loginResponse);
                         this.alertService.success('Logged In');
                         return loginSuccess({ loginResponse, redirect: true });
                     }),
                     catchError(error => {
-                        //? Disable loading
+                        this.store.dispatch(setLoading({ status: false }));
                         this.alertService.error(error.error.message);
                         return of(loginFail(error));
                     })
