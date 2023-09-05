@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { LoginForm } from '@models/login-form.model';
 import { LoginResponse } from '@models/login-response.model';
 import { AUTH_STATE_NAME } from './auth.selector';
+import { User } from '@models/user.model';
 
 export const LOGIN_START = `[${AUTH_STATE_NAME}] login start`;
 export const LOGIN_SUCCESS = `[${AUTH_STATE_NAME}] login success`;
@@ -15,7 +16,7 @@ export const loginStart = createAction(
 
 export const loginSuccess = createAction(
     LOGIN_SUCCESS,
-    props<{loginResponse: LoginResponse, redirect: boolean }>()
+    props<{token: string, user: User, redirect: boolean }>()
 );
 
 //? This is to delete

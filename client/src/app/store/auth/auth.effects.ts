@@ -28,9 +28,9 @@ export class AuthEffects {
                 return this.apiService.login(action.loginForm).pipe(
                     map(loginResponse => {
                         this.store.dispatch(setLoading({ status: false }));
-                        this.authService.login(loginResponse);
+                        const user = this.authService.login(loginResponse);
                         this.alertService.success('Logged In');
-                        return loginSuccess({ loginResponse, redirect: true });
+                        return loginSuccess({ token: loginResponse.authorization, user, redirect: true });
                     }),
                     catchError(error => {
                         this.store.dispatch(setLoading({ status: false }));
@@ -69,10 +69,10 @@ export class AuthEffects {
     autoLogin$ = createEffect(() => {
         return timer(0).pipe(
             map(() => {
-                const user = this.authService.getUser();
                 const token = this.authService.getAccessToken();
-                if (user != null && token != null) {
-                    this.store.dispatch(loginSuccess({ loginResponse: { authorization: token, userData: user }, redirect: false }));
+                if (token != null) {
+                    const user = this.authService.getUserFromToken(token);
+                    this.store.dispatch(loginSuccess({ token, user, redirect: false }));
                 }
             })
         );

@@ -17,9 +17,9 @@ export class AuthService {
     private store: Store,
   ) { }
 
-  public login(loginResponse: LoginResponse) {
+  public login(loginResponse: LoginResponse): User {
     this.saveAccessToken(loginResponse.authorization);
-    this.saveUser(loginResponse.userData);
+    return this.getUserFromToken(loginResponse.authorization);
     // this.sessionTimeout(loginResponse.authorization);
   }
 
@@ -108,9 +108,8 @@ export class AuthService {
     sessionStorage.removeItem(this.USER_DATA);
     sessionStorage.setItem(this.USER_DATA, JSON.stringify(user));
   }
-  public getUser(): User | null {
-    const user = sessionStorage.getItem(this.USER_DATA);
-    if (user) return JSON.parse(user);
-    return null;
+  public getUserFromToken(token: string): User {
+    const user: User = JSON.parse(atob(token.split('.')[1]));
+    return user;
   }
 }
