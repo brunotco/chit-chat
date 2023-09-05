@@ -25,6 +25,7 @@
     ],
     "paths": {
       "@models/*": ["src/app/models/*"],
+      "@modules/*": ["src/app/modules/*"],
       "@store/*": ["src/app/store/*"]
     }
   },
