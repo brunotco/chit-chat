@@ -41,17 +41,6 @@ export class AuthService {
     };
   }
 
-  // private async _createToken(user): Promise<LoginData> {
-  //   // const user: JwtPayload = { login };
-  //   const authorization = await this.jwtService.sign(user);
-  //   return {
-  //     authorization,
-  //     userData: user,
-  //     // expiresIn: process.env.EXPIRESIN,
-  //     expiresIn: '60m',
-  //   };
-  // }
-
   /**
    * Validate the JWT Token
    * @param payload The JWT payload
