@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { autoLogin, autoLogout, loginFail, loginStart, loginSuccess, logout } from './auth.actions';
-import { exhaustMap, map, catchError, tap, mergeMap, delay, observeOn, take, switchMap } from "rxjs/operators";
+import { loginFail, loginStart, loginSuccess, logout } from './auth.actions';
+import { exhaustMap, map, catchError, tap, mergeMap, delay, observeOn, take, switchMap, timeout } from "rxjs/operators";
 import { ApiService } from 'src/app/api/api.service';
 import { of, timer } from 'rxjs';
 import { AlertService } from 'src/app/alert/alert.service';
@@ -57,7 +57,7 @@ export class AuthEffects {
     logout$ = createEffect(() => {
         return this.actions$.pipe(
             ofType(logout),
-            map(action => {
+            map(() => {
                 this.authService.logout();
                 this.alertService.success('Logged Out');
                 this.router.navigate(['login']);
@@ -72,21 +72,28 @@ export class AuthEffects {
                 const user = this.authService.getUser();
                 const token = this.authService.getAccessToken();
                 if (user != null && token != null) {
-                    this.store.dispatch(autoLogin({ data: { token, user }, redirect: false }));
+                    this.store.dispatch(loginSuccess({ loginResponse: { authorization: token, userData: user }, redirect: false }));
                 }
             })
         );
-
-        // return timer(0).pipe(
-        //     map(() => {
-        //         return of(this.authService.log());
-        //     })
-        // );
     },
-    {dispatch:false});
+    { dispatch: false });
 
-    //? Create effect to do this
-    // this.logoutTimeout = setTimeout(() => {
-    //     this.store.dispatch(logout());
-    //   }, timeout);
+    autoLogout$ = createEffect(() => {
+        return this.actions$.pipe(
+            ofType(loginSuccess),
+            map(()  => {
+                return this.authService.getTimeout();
+            }),
+            switchMap((timeout) => {
+                console.warn(
+                    `Expiration at: ${new Date(new Date().getTime() + timeout)}`
+                );
+                return timer(timeout);
+            }),
+            map(() => {
+                return logout();
+            })
+        )
+    });
 }

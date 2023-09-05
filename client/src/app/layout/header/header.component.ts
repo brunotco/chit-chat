@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { isAuthenticated } from '@store/auth/auth.selector';
-import { autoLogin, logout } from '@store/auth/auth.actions';
+import { logout } from '@store/auth/auth.actions';
 
 @Component({
   selector: 'app-header',

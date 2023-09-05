@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { autoLogout, logout } from '@store/auth/auth.actions';
+import { logout } from '@store/auth/auth.actions';
 import { LoginResponse } from '@models/login-response.model';
 import { User } from '@models/user.model';
 
@@ -41,6 +41,15 @@ export class AuthService {
     this.logoutTimeout = setTimeout(() => {
       this.store.dispatch(logout());
     }, timeout);
+  }
+
+  public getTimeout() {
+    const token = this.getAccessToken();
+    if (!token) return 0;
+    const expires = JSON.parse(atob(token.split('.')[1])).exp;
+    const now = new Date().getTime();
+    const timeout = (expires * 1000) - now;
+    return timeout;
   }
 
   //? To check
