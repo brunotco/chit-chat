@@ -37,9 +37,7 @@ export class AuthService {
     const userData = await this.usersService.findByLogin(login);
     // const token = await this._createToken(user);
     return {
-      authorization: this.jwtService.sign(userData),
-      expiresIn: '60m',
-      userData
+      authorization: this.jwtService.sign(userData)
     };
   }
 
