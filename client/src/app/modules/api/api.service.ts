@@ -9,7 +9,7 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) { }
 
-  private apiPrefix = isDevMode() ? '' : 'https://chit-chat-api.onrender.com';
+  private apiPrefix = isDevMode() ? '' : 'https://chit-chat-api.mako.pt';
 
   login(login: LoginForm): Observable<LoginResponse> {
     return this.httpClient.post<LoginResponse>(`${this.apiPrefix}/api/auth/login`, login);
