@@ -3,16 +3,15 @@ import { Injectable, isDevMode } from '@angular/core';
 import { LoginForm } from '@models/login-form.model';
 import { LoginResponse } from '@models/login-response.model';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environment/environment';
 
 @Injectable()
 export class ApiService {
 
   constructor(private httpClient: HttpClient) { }
 
-  private apiPrefix = isDevMode() ? '' : 'https://chit-chat-api.mako.pt';
-
   login(login: LoginForm): Observable<LoginResponse> {
-    return this.httpClient.post<LoginResponse>(`${this.apiPrefix}/api/auth/login`, login);
+    return this.httpClient.post<LoginResponse>(`${environment.apiUrl}/api/auth/login`, login);
   }
 
   getUsers() {
