@@ -7,7 +7,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
+  const frontendUrl = process.env.FRONTEND_URL;
+  if (frontendUrl) {
+    app.enableCors({
+      origin: frontendUrl,
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    });
+  }
   const config = new DocumentBuilder()
     .setTitle('Chit-Chat')
     .setDescription('Chit-Chat API description')
