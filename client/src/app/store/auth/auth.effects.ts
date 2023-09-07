@@ -60,7 +60,7 @@ export class AuthEffects {
             map(() => {
                 this.authService.logout();
                 this.alertService.success('Logged Out');
-                this.router.navigate(['login']);
+                this.router.navigate(['/auth/login']);
             })
         );
     },
