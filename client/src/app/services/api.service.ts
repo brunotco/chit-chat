@@ -5,7 +5,9 @@ import { LoginResponse } from '@models/login-response.model';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environment/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ApiService {
 
   constructor(private httpClient: HttpClient) { }

@@ -4,7 +4,9 @@ import { logout } from '@store/auth/auth.actions';
 import { LoginResponse } from '@models/login-response.model';
 import { User } from '@models/user.model';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
 
   ACCESS_TOKEN = 'access_token';

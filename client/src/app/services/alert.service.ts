@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { AlertComponent } from './alert.component';
+import { AlertComponent } from '../modules/alert/alert.component';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AlertService {
 
   constructor(private snackBar: MatSnackBar) { }
