@@ -23,8 +23,8 @@ export class HeaderComponent {
   }
 
   public authNav = [
-    { name: 'Login', click: () => this.navigateTo('/login'), icon: 'power_settings_new' },
-    { name: 'Register', click: () => this.navigateTo('/register'), icon: 'add_circle' }
+    { name: 'Login', click: () => this.navigateTo('/auth/login'), icon: 'power_settings_new' },
+    { name: 'Register', click: () => this.navigateTo('/auth/register'), icon: 'add_circle' }
   ]
 
   public userNav = [

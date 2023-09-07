@@ -6,15 +6,14 @@ import { RegisterComponent } from './register/register.component';
 
 const routes: Routes = [
   {
-    path: 'auth',
-    children: [
-      { path: '', component: LandingComponent },
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent }
-    ]
+    path: '', component: LandingComponent,
   },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent }
+  {
+    path: 'login', component: LoginComponent,
+  },
+  {
+    path: 'register', component: RegisterComponent,
+  }
 ];
 
 @NgModule({
