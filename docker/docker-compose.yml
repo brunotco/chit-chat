@@ -2,7 +2,7 @@ version: "3.8"
 services:
   api:
     build:
-      context: ./api
+      context: ../api
       dockerfile: Dockerfile
       target: development
     depends_on:
@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./api:/app
+      - ../api:/app
       - /app/node_modules/
     command: npm run start:dev
     networks:
@@ -20,11 +20,11 @@ services:
 
   client:
     build:
-      context: ./client
+      context: ../client
       dockerfile: Dockerfile
       target: development
     volumes:
-      - ./client:/app
+      - ../client:/app
       - /app/node_modules/
     command: npm run start
     networks:
