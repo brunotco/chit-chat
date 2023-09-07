@@ -5,7 +5,6 @@ import { MaterialModule } from '@modules/material.module';
 import { FooterComponent } from './footer/footer.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { LayoutComponent } from './layout.component';
-import { AuthModule } from '@modules/auth/auth.module';
 import { LayoutRoutingModule } from './layout-routing.module';
 import { MainComponent } from './main/main.component';
 import { TempComponent } from './temp/temp.component';
@@ -24,11 +23,7 @@ import { LoadingComponent } from './loading/loading.component';
     CommonModule,
     LayoutRoutingModule,
     MaterialModule,
-    FlexLayoutModule,
-    AuthModule
-  ],
-  exports: [
-    LayoutComponent
+    FlexLayoutModule
   ]
 })
 export class LayoutModule { }

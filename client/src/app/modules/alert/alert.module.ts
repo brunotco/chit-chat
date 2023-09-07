@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AlertComponent } from './alert.component';
-import { AlertService } from './alert.service';
 
 @NgModule({
   declarations: [
@@ -9,9 +8,6 @@ import { AlertService } from './alert.service';
   ],
   imports: [
     CommonModule
-  ],
-  providers: [
-    AlertService
   ]
 })
 export class AlertModule { }
