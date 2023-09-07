@@ -22,3 +22,10 @@ Client - `angular.json`:
 "host": "0.0.0.0",
 "poll": 100
 ```
+
+## Generating a random JWT secret
+To generate a string to use as JWT secret you can use:
+
+```
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
