@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { loginFail, loginStart, loginSuccess, logout } from './auth.actions';
-import { exhaustMap, map, catchError, tap, mergeMap, delay, observeOn, take, switchMap, timeout } from "rxjs/operators";
+import { exhaustMap, map, catchError, tap, switchMap } from "rxjs/operators";
 import { ApiService } from 'src/app/modules/api/api.service';
 import { of, timer } from 'rxjs';
 import { AlertService } from 'src/app/modules/alert/alert.service';

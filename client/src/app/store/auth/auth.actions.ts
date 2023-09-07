@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 import { LoginForm } from '@models/login-form.model';
-import { LoginResponse } from '@models/login-response.model';
 import { AUTH_STATE_NAME } from './auth.selector';
 import { User } from '@models/user.model';
 
