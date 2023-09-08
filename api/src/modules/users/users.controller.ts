@@ -6,6 +6,7 @@ import {
   Put,
   Request,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
@@ -20,6 +21,7 @@ import { RegistrationData } from '@shared/registration-data';
 import { UserDto } from '@shared/dto/user.dto';
 import { GetUserDto } from '@shared/dto/get-user.dto';
 import { UpdatePwdDto } from '@shared/dto/update-pwd.dto';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('users')
 @Controller('users')
@@ -35,6 +37,7 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Returns all users' })
   @ApiOkResponse({ type: UserDto, isArray: true })
+  @UseInterceptors(CacheInterceptor)
   public async findAll(): Promise<UserDto[]> {
     return this.usersService.findAll();
   }

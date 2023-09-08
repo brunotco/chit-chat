@@ -11,16 +11,24 @@ import { LoginUserDto } from '@shared/dto/login-user.dto';
 import { UpdatePwdDto } from '@shared/dto/update-pwd.dto';
 import { UserDto } from '@shared/dto/user.dto';
 import { compare, hash } from 'bcrypt';
+import { RedisService } from '@modules/redis/redis.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private redisService: RedisService,
+  ) {}
 
   /**
    * Returns all users
    * @returns Data of all users
    */
   public async findAll(): Promise<UserDto[]> {
+    // const usersFromCache = await this.redisService.get<UserDto[]>('users');
+    // if (usersFromCache) {
+    //   return usersFromCache;
+    // }
     const users = await this.prismaService.user.findMany({
       select: {
         id: true,
@@ -31,8 +39,14 @@ export class UsersService {
         active: true,
       },
     });
+    // await this.redisService.set('users', users);
     // users.forEach((user) => delete user.password);
-    return users;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(users);
+      }, 2000);
+    });
+    // return users;
   }
 
   /**
