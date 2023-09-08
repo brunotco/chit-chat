@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { isAuthenticated } from '@store/auth/auth.selector';
 import { logout } from '@store/auth/auth.actions';
+import { Navigation } from '@models/navigation.model';
 
 @Component({
   selector: 'app-header',
@@ -10,8 +11,7 @@ import { logout } from '@store/auth/auth.actions';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-
-  menuOpen = false;
+  public menuOpen = false;
 
   public isAuthenticated$;
 
@@ -22,16 +22,16 @@ export class HeaderComponent {
     this.isAuthenticated$ = this.store.select(isAuthenticated);
   }
 
-  public authNav = [
-    { name: 'Login', click: () => this.navigateTo('/auth/login'), icon: 'power_settings_new' },
-    { name: 'Register', click: () => this.navigateTo('/auth/register'), icon: 'add_circle' }
+  public authNav: Navigation[] = [
+    new Navigation('Login', () => this.navigateTo('/auth/login'), 'power_settings_new'),
+    new Navigation('Register', () => this.navigateTo('/auth/register'), 'add_circle')
   ]
 
-  public userNav = [
-    { name: 'Users', click: () => this.navigateTo('/users'), icon: 'group' },
-    { name: 'Rooms', click: () => this.navigateTo('/rooms'), icon: 'meeting_room' },
-    { name: 'Profile', click: () => this.navigateTo('/profile'), icon: 'person' },
-    { name: 'Logout', click: () => this.logout(), icon: 'exit_to_app' }
+  public userNav: Navigation[] = [
+    new Navigation('Users', () => this.navigateTo('/users'), 'group'),
+    new Navigation('Rooms', () => this.navigateTo('/rooms'), 'meeting_room'),
+    new Navigation('Profile', () => this.navigateTo('/profile'), 'person'),
+    new Navigation('Logout', () => this.logout(), 'exit_to_app')
   ]
 
   public navigateTo(link: string) {
