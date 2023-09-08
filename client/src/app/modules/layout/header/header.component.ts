@@ -28,6 +28,7 @@ export class HeaderComponent {
   ]
 
   public userNav = [
+    { name: 'Users', click: () => this.navigateTo('/users'), icon: 'group' },
     { name: 'Rooms', click: () => this.navigateTo('/rooms'), icon: 'meeting_room' },
     { name: 'Profile', click: () => this.navigateTo('/profile'), icon: 'person' },
     { name: 'Logout', click: () => this.logout(), icon: 'exit_to_app' }

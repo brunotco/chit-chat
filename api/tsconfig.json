@@ -18,8 +18,8 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@prisma/*": ["prisma/*"],
       "@modules/*": ["src/modules/*"],
+      "@prisma/*": ["prisma/*"],
       "@shared/*": ["src/shared/*"]
     }
   }

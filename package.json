@@ -2,7 +2,7 @@
   "name": "chit-chat",
   "version": "1.0.0",
   "scripts": {
-    "docker": "docker compose -f docker/docker-compose.yml up",
-    "docker:rebuild": "docker compose -f docker/docker-compose.yml up -V --build"
+    "docker": "docker compose -f docker/docker-compose.yml -p chit-chat up",
+    "docker:rebuild": "docker compose -f docker/docker-compose.yml -p chit-chat up -V --build"
   }
 }
