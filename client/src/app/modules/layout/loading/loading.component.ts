@@ -9,6 +9,7 @@ import { getLoading } from '@store/shared/shared.selector';
 })
 export class LoadingComponent {
   public showLoading$;
+  
   constructor(
     private store: Store
   ) {
