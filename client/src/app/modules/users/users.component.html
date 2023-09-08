@@ -1,5 +1,10 @@
 <p>Users</p>
-<p *ngFor="let user of users$ | async">
-    {{ user | json}}
-</p>
+<table *ngIf="(users$ | async)" mat-table [dataSource]="users$" class="mat-elevation-z8">
+    <ng-container *ngFor="let column of tableColumns" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef>{{ column }}</th>
+        <td mat-cell *matCellDef="let row"> {{row[column]}} </td>
+    </ng-container>
 
+    <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: tableColumns;" (click)="userClicked(row)"></tr>
+</table>

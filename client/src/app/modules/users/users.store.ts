@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { User } from '@models/user.model';
 import { ComponentStore, tapResponse, OnStoreInit } from '@ngrx/component-store';
+import { Store } from '@ngrx/store';
 import { AlertService } from '@services/alert.service';
 import { ApiService } from '@services/api.service';
-import { exhaustMap } from 'rxjs';
+import { setLoading } from '@store/shared/shared.actions';
+import { exhaustMap, tap } from 'rxjs';
 
 export interface UsersState {
     users: User[];
@@ -17,12 +19,14 @@ export const initialState: UsersState = {
 export class UsersStore extends ComponentStore<UsersState> implements OnStoreInit {
     constructor(
         private apiService: ApiService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private store: Store
     ) {
         super(initialState);
     }
 
     ngrxOnStoreInit() {
+        this.store.dispatch(setLoading({ status: true }));
         this.getUsers();
     }
 
@@ -36,6 +40,7 @@ export class UsersStore extends ComponentStore<UsersState> implements OnStoreIni
         (trigger$) => trigger$.pipe(
             exhaustMap(() => {
                 return this.apiService.getUsers().pipe(
+                    tap(() => this.store.dispatch(setLoading({ status: false }))),
                     tapResponse(
                         (result) => this.updateUsers(result),
                         (error: { message: string }) => this.alertService.error(error.message)
